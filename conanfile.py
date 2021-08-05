@@ -111,7 +111,7 @@ class BoostConan(ConanFile):
 
     def source(self):
         zip_name = "%s.zip" % self.folder_name if sys.platform == "win32" else "%s.tar.gz" % self.folder_name
-        url = "https://dl.bintray.com/boostorg/release/%s/source/%s" % (self.upstream_version, zip_name)
+        url = "https://boostorg.jfrog.io/artifactory/main/release/%s/source/%s" % (self.upstream_version, zip_name)
         self.output.info("Downloading %s..." % url)
         tools.download(url, zip_name)
         tools.unzip(zip_name)
