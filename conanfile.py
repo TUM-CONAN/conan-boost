@@ -16,7 +16,7 @@ lib_list = ['math', 'wave', 'container', 'contract', 'exception', 'graph', 'iost
 class BoostConan(ConanFile):
     name = "Boost"
     upstream_version = "1.75.0"
-    package_revision = "-r2"
+    package_revision = "-r3"
     version = "{0}{1}".format(upstream_version, package_revision)
 
     settings = "os", "arch", "compiler", "build_type"
@@ -79,7 +79,7 @@ class BoostConan(ConanFile):
             # if self.settings.os == "Linux" or self.settings.os == "Macos":
             #     self.requires("bzip2/1.0.6@camposs/stable")
             #     self.options["bzip2"].shared = self.options.shared
-            self.requires("zlib/1.2.11-r1@camposs/stable")
+            self.requires("zlib/1.2.12@camposs/stable")
             self.options["zlib"].shared = self.options.shared
 
     def system_requirements(self):
@@ -289,7 +289,7 @@ class BoostConan(ConanFile):
 
         contents = ""
         if self.zip_bzip2_requires_needed:
-            contents = "\nusing zlib : 1.2.11 : <include>%s <search>%s <name>%s ;" % (
+            contents = "\nusing zlib : 1.2.12 : <include>%s <search>%s <name>%s ;" % (
                 self.deps_cpp_info["zlib"].include_paths[0].replace('\\', '/'),
                 self.deps_cpp_info["zlib"].lib_paths[0].replace('\\', '/'),
                 self.deps_cpp_info["zlib"].libs[0])
