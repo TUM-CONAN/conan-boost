@@ -75,12 +75,11 @@ class BoostConan(ConanFile):
             self.options.remove("fPIC")
             self.options.remove("python")
 
+    def requirements(self):
         if self.zip_bzip2_requires_needed:
             if self.settings.os == "Linux" or self.settings.os == "Macos":
                 self.requires("bzip2/1.0.8")
-                self.options["bzip2"].shared = self.options.shared
             self.requires("zlib/1.2.12")
-            self.options["zlib"].shared = self.options.shared
 
     def system_requirements(self):
         if not self.options.without_python:
