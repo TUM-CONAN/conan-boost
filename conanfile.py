@@ -15,8 +15,8 @@ lib_list = ['math', 'wave', 'container', 'contract', 'exception', 'graph', 'iost
 
 class BoostConan(ConanFile):
     name = "Boost"
-    upstream_version = "1.75.0"
-    package_revision = "-r3"
+    upstream_version = "1.79.0"
+    package_revision = ""
     version = "{0}{1}".format(upstream_version, package_revision)
 
     settings = "os", "arch", "compiler", "build_type"
@@ -76,10 +76,10 @@ class BoostConan(ConanFile):
             self.options.remove("python")
 
         if self.zip_bzip2_requires_needed:
-            # if self.settings.os == "Linux" or self.settings.os == "Macos":
-            #     self.requires("bzip2/1.0.6@camposs/stable")
-            #     self.options["bzip2"].shared = self.options.shared
-            self.requires("zlib/1.2.12@camposs/stable")
+            if self.settings.os == "Linux" or self.settings.os == "Macos":
+                self.requires("bzip2/1.0.8")
+                self.options["bzip2"].shared = self.options.shared
+            self.requires("zlib/1.2.12")
             self.options["zlib"].shared = self.options.shared
 
     def system_requirements(self):
@@ -125,11 +125,8 @@ class BoostConan(ConanFile):
             self.output.warn("Header only package, skipping build")
             return
 
-        if os_info.is_windows:
-            tools.patch(base_path=os.path.join(self.build_folder, self.folder_name), patch_file="patches/fix_pcl_1.11_compiler_error_cuda.patch", strip=2)
-        # fix for change to boost quaternion (made members private, but we want to subclass it and access it's members)
-        # somehow this patch does not work :(((
-        # tools.patch(base_path=os.path.join(self.build_folder, self.folder_name), patch_file='patches/quaternion_make_members_protected.patch', strip=1)
+        # if os_info.is_windows:
+        #     tools.patch(base_path=os.path.join(self.build_folder, self.folder_name), patch_file="patches/fix_pcl_1.11_compiler_error_cuda.patch", strip=2)
 
         # for now just replace the hopefully unique string in this file ..
         tools.replace_in_file(os.path.join(self.build_folder, self.folder_name, "boost", "math", "quaternion.hpp"), 
@@ -137,12 +134,6 @@ class BoostConan(ConanFile):
            T a, b, c, d;""",
             """        protected:
            T a, b, c, d;""")
-
-        # tools.patch(base_path=os.path.join(self.build_folder, self.folder_name), patch_file='patches/fix_cond_waitfor_fibers01.patch', strip=1)
-
-        # if self.settings.compiler == "Visual Studio":
-        #     tools.replace_in_file(os.path.join(self.source_folder, self.folder_name, "boost/config/compiler/visualc.hpp"), 
-        #         "#if (_MSC_VER > 1910)", '''#if (_MSC_VER > 1915)''')
 
         b2_exe = self.bootstrap()
         flags = self.get_build_flags()
